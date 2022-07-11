@@ -31,6 +31,8 @@ const displayController = (function (gameBoard) {
   };
 })();
 
+//make factory function for players
+
 let gameboardTemp = gameBoardMaker.gameBoard;
 let displayTemp = displayController.displayBoard(gameboardTemp);
 
