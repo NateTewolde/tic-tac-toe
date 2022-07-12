@@ -1,7 +1,7 @@
 const container = document.querySelector("#container");
 
 const gameBoardMaker = (function (player) {
-  let gameBoardArray = ["X", "O", "X", "O", "X", "O", "X", "O", "X"];
+  let gameBoardArray = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
   return {
     gameBoard: gameBoardArray,
   };
@@ -18,7 +18,7 @@ const displayController = (function (gameBoard) {
       for (let j = 0; j < 3; j++) {
         const cell = document.createElement("div");
         cell.classList.add("cell");
-        cell.setAttribute('data-Id', counter)
+        cell.setAttribute("data-Id", counter);
         cell.textContent = gameBoard[counter];
         row[i].appendChild(cell);
         counter++;
@@ -34,19 +34,24 @@ const displayController = (function (gameBoard) {
 
 //make factory function for players
 const Player = (name) => {
-  return {name};
-}
-
+  return { name };
+};
 
 function formatCells() {
   const cells = document.querySelectorAll(".cell");
-  console.log(cells.length)
+  console.log(cells.length);
   cells.forEach((cell) => {
     cell.addEventListener("click", () => {
-      let gameBoardIndex = cell.getAttribute('data-ID')
-      console.log(gameBoardIndex)
-
+      let gameBoardIndex = cell.getAttribute("data-ID");
+      console.log(gameBoardIndex);
     });
+  });
+}
+
+function formatStart() {
+  const cell = document.querySelector(".start-btn");
+  cell.addEventListener("click", () => {
+    console.log("pp");
   });
 }
 
@@ -54,4 +59,6 @@ let gameboardTemp = gameBoardMaker.gameBoard;
 let displayTemp = displayController.displayBoard(gameboardTemp);
 
 container.appendChild(displayTemp);
+
 formatCells();
+formatStart();
