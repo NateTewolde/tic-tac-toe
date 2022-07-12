@@ -1,3 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background-color: orange;
+  font-family: "Roboto", sans-serif;
+}
+
 .row {
   display: flex;
+  width: 60vw;
+  height: 20vh;
+}
+
+.cell {
+  flex: 1;
+  background-color: lightblue;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
