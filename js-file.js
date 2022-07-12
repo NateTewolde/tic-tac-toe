@@ -18,6 +18,7 @@ const displayController = (function (gameBoard) {
       for (let j = 0; j < 3; j++) {
         const cell = document.createElement("div");
         cell.classList.add("cell");
+        cell.setAttribute('data-Id', counter)
         cell.textContent = gameBoard[counter];
         row[i].appendChild(cell);
         counter++;
@@ -32,8 +33,25 @@ const displayController = (function (gameBoard) {
 })();
 
 //make factory function for players
+const Player = (name) => {
+  return {name};
+}
+
+
+function formatCells() {
+  const cells = document.querySelectorAll(".cell");
+  console.log(cells.length)
+  cells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      let gameBoardIndex = cell.getAttribute('data-ID')
+      console.log(gameBoardIndex)
+
+    });
+  });
+}
 
 let gameboardTemp = gameBoardMaker.gameBoard;
 let displayTemp = displayController.displayBoard(gameboardTemp);
 
 container.appendChild(displayTemp);
+formatCells();
