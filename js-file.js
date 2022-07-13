@@ -1,15 +1,28 @@
-const gameBoardMaker = (function (player) {
+const gameBoardMaker = (function () {
   let gameBoardArray = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+
+  function gameBoard(player, choice) {
+    let mark = gameBoardArray[choice];
+    if (player == "playerOne") {
+      mark = "X";
+    }
+    if (player == "playerTwo") {
+      mark = "O";
+    }
+    gameBoardArray[choice] = mark;
+    return gameBoardArray;
+  }
   return {
-    gameBoard: gameBoardArray,
+    gameBoard: gameBoard,
   };
 })();
 
-const displayController = (function (gameBoard) {
-  function displayBoard(gameBoard) {
+const displayController = (function () {
+  function makeBoard(gameBoard) {
     let counter = 0;
     const row = [];
-    let gridContainer = document.createElement("div");
+    let boardContainer = document.createElement("div");
+    boardContainer.setAttribute("id", "board-container");
     for (let i = 0; i < 3; i++) {
       row[i] = document.createElement("div");
       row[i].classList.add("row");
@@ -21,10 +34,20 @@ const displayController = (function (gameBoard) {
         row[i].appendChild(cell);
         counter++;
       }
-      gridContainer.appendChild(row[i]);
+      boardContainer.appendChild(row[i]);
     }
-    return gridContainer;
+    return boardContainer;
   }
+  function displayBoard() {
+    const container = document.querySelector("#container");
+    if (checkForBoard() === true) {
+      removeAllChildNodes(container);
+    }
+    let gameboardTemp = gameBoardMaker.gameBoard();
+    let displayTemp = makeBoard(gameboardTemp);
+    container.appendChild(displayTemp);
+  }
+  displayBoard();
   return {
     displayBoard: displayBoard,
   };
@@ -34,11 +57,6 @@ const displayController = (function (gameBoard) {
 const Player = (name) => {
   return { name };
 };
-
-const container = document.querySelector("#container");
-let gameboardTemp = gameBoardMaker.gameBoard;
-let displayTemp = displayController.displayBoard(gameboardTemp);
-container.appendChild(displayTemp);
 
 const formatCells = (function () {
   const cells = document.querySelectorAll(".cell");
@@ -59,3 +77,21 @@ const formatStart = (function () {
 })();
 
 const playGame = (function () {})();
+
+//helper function
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+function checkForBoard() {
+  const boardCheck = document.getElementById("board-container");
+  if (!boardCheck) {
+    return false;
+  }
+  return true;
+}
+
+gameBoardMaker.gameBoard("playerOne", 4);
+displayController.displayBoard();
