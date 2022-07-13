@@ -1,5 +1,3 @@
-const container = document.querySelector("#container");
-
 const gameBoardMaker = (function (player) {
   let gameBoardArray = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
   return {
@@ -37,7 +35,12 @@ const Player = (name) => {
   return { name };
 };
 
-function formatCells() {
+const container = document.querySelector("#container");
+let gameboardTemp = gameBoardMaker.gameBoard;
+let displayTemp = displayController.displayBoard(gameboardTemp);
+container.appendChild(displayTemp);
+
+const formatCells = (function () {
   const cells = document.querySelectorAll(".cell");
   console.log(cells.length);
   cells.forEach((cell) => {
@@ -46,19 +49,13 @@ function formatCells() {
       console.log(gameBoardIndex);
     });
   });
-}
+})();
 
-function formatStart() {
+const formatStart = (function () {
   const cell = document.querySelector(".start-btn");
   cell.addEventListener("click", () => {
     console.log("pp");
   });
-}
+})();
 
-let gameboardTemp = gameBoardMaker.gameBoard;
-let displayTemp = displayController.displayBoard(gameboardTemp);
-
-container.appendChild(displayTemp);
-
-formatCells();
-formatStart();
+const playGame = (function () {})();
