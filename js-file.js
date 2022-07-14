@@ -54,7 +54,6 @@ const playGame = (function () {
         console.log("WINNER!");
         return 1;
       }
-      return -1;
     }
   }
   return {
@@ -139,6 +138,8 @@ const displayController = (function () {
       console.log("pp");
     });
   }
+
+  function displayWinner() {}
 
   displayBoard();
   formatStart();
