@@ -12,8 +12,17 @@ const Player = (name) => {
 };
 
 const playGame = (function () {
-  const playerOne = Player("playerOne");
-  const playerTwo = Player("playerTwo");
+  names = ["playerOne", "playerTwo"];
+
+  function setNames() {
+    const playerOneInput = document.getElementById("playerOne").value;
+    names[0] = playerOneInput;
+    const playerTwoInput = document.getElementById("playerTwo").value;
+    names[1] = playerTwoInput;
+  }
+
+  const playerOne = Player(names[0]);
+  const playerTwo = Player(names[1]);
   const players = [playerOne];
   let winner = false;
 
@@ -93,6 +102,60 @@ const gameBoardMaker = (function () {
 })();
 
 const displayController = (function () {
+  function displayNameForm() {
+    const nameFormSection = document.createElement("div");
+    nameFormSection.setAttribute("id", "name-form-section");
+
+    const formHeader = document.createElement("div");
+    formHeader.classList.add("form-header");
+    formHeader.textContent = "Enter your names:";
+
+    const namesForm = document.createElement("form");
+    namesForm.setAttribute("action", "");
+    namesForm.setAttribute("method", "post");
+    namesForm.setAttribute("id", "names_form");
+
+    const playerOneField = document.createElement("div");
+    playerOneField.classList.add("form-field");
+    const playerOneInput = document.createElement("input");
+    playerOneInput.setAttribute("type", "text");
+    playerOneInput.setAttribute("name", "playerOne");
+    playerOneInput.setAttribute("id", "playerOne");
+    playerOneInput.setAttribute("placeholder", "Player 1");
+    playerOneField.appendChild(playerOneInput);
+    namesForm.appendChild(playerOneField);
+
+    const playerTwoField = document.createElement("div");
+    playerTwoField.classList.add("form-field");
+    const playerTwoInput = document.createElement("input");
+    playerTwoInput.setAttribute("type", "text");
+    playerTwoInput.setAttribute("name", "playerTwo");
+    playerTwoInput.setAttribute("id", "playerTwo");
+    playerTwoInput.setAttribute("placeholder", "Player 2");
+    playerTwoField.appendChild(playerTwoInput);
+    namesForm.appendChild(playerTwoField);
+
+    const startBtn = document.createElement("button");
+    startBtn.classList.add("start-form-btn");
+    startBtn.setAttribute("type", "button");
+    startBtn.textContent = "start";
+    namesForm.appendChild(startBtn);
+
+    const container = document.querySelector("#container");
+
+    nameFormSection.appendChild(formHeader);
+    nameFormSection.appendChild(namesForm);
+    container.appendChild(nameFormSection);
+
+    startFormButton();
+  }
+  displayNameForm();
+
+  function startFormButton() {
+    const startFormBtn = document.querySelector(".start-form-btn");
+    startFormBtn.addEventListener("click", playGame.setNames);
+  }
+
   function makeBoard(gameBoard) {
     let counter = 0;
     const row = [];
