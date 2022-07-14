@@ -14,7 +14,8 @@ const Player = (name) => {
 const playGame = (function () {
   const playerOne = Player("playerOne");
   const playerTwo = Player("playerTwo");
-  players = [playerOne];
+  const players = [playerOne];
+  let winner = false;
 
   function getCurrentPlayer() {
     let currentPlayer = players[players.length - 1];
@@ -44,22 +45,27 @@ const playGame = (function () {
 
     let currentPlayer = getCurrentPlayer();
     playerChoices = currentPlayer.getChoices();
-    console.log("hi");
     for (combo in winningCombinations) {
       winningCombo = arrayInArrayChecker(
         winningCombinations[combo],
         playerChoices
       );
       if (winningCombo == true) {
-        console.log("WINNER!");
-        return 1;
+        displayController.displayWinner(currentPlayer);
+        winner = true;
       }
     }
   }
+
+  function winnerExists() {
+    return winner;
+  }
+
   return {
     currentPlayer: getCurrentPlayer,
     updateCurrentPlayer: updateCurrentPlayer,
     checkForWinner: checkForWinner,
+    winnerExists,
   };
 })();
 
@@ -108,6 +114,9 @@ const displayController = (function () {
     return boardContainer;
   }
   function displayBoard() {
+    if (playGame.winnerExists()) {
+      return -1;
+    }
     const container = document.querySelector("#container");
     if (checkForBoard() === true) {
       removeAllChildNodes(container);
@@ -115,6 +124,7 @@ const displayController = (function () {
     let gameboardTemp = gameBoardMaker.gameBoard();
     let displayTemp = makeBoard(gameboardTemp);
     container.appendChild(displayTemp);
+
     formatCells();
   }
   function formatCells() {
@@ -128,23 +138,45 @@ const displayController = (function () {
         let currentPlayer = playGame.currentPlayer();
         currentPlayer.makeMark(gameBoardIndex);
         playGame.updateCurrentPlayer();
+        displayRoundUpdates();
       });
     });
   }
 
-  function formatStart() {
-    const cell = document.querySelector(".start-btn");
-    cell.addEventListener("click", () => {
-      console.log("pp");
-    });
+  // function formatStart() {
+  //   const cell = document.querySelector(".start-btn");
+  //   cell.addEventListener("click", () => {
+  //     console.log("pp");
+  //   });
+  // }
+
+  function displayRoundUpdates() {
+    if (playGame.winnerExists()) {
+      return -1;
+    }
+    let currentPlayer = playGame.currentPlayer();
+    const gameUpdates = document.querySelector(".game-updates");
+    removeAllChildNodes(gameUpdates);
+    let roundUpdates = document.createElement("span");
+    roundUpdates.textContent = currentPlayer.getName() + " ,It's your move.";
+    gameUpdates.appendChild(roundUpdates);
   }
 
-  function displayWinner() {}
+  function displayWinner(currentPlayer) {
+    const gameUpdates = document.querySelector(".game-updates");
+    removeAllChildNodes(gameUpdates);
+    let winnerUpdate = document.createElement("span");
+    winnerUpdate.textContent = currentPlayer.getName() + " wins!";
+    gameUpdates.appendChild(winnerUpdate);
+  }
 
   displayBoard();
-  formatStart();
+  displayRoundUpdates();
+  // formatStart();
   return {
-    displayBoard: displayBoard,
+    displayBoard,
+    displayWinner,
+    displayRoundUpdates,
   };
 })();
 
