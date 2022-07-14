@@ -5,6 +5,7 @@ const Player = (name) => {
     choices.push(choice);
     gameBoardMaker.gameBoard(name, choice);
     displayController.displayBoard();
+    playGame.checkForWinner();
   };
   getChoices = () => choices;
   return { getChoices, getName, makeMark };
@@ -29,14 +30,43 @@ const playGame = (function () {
       players.push(playerOne);
     }
   }
+
+  function checkForWinner() {
+    winningCombinations = [];
+    winningCombinations.push(["0", "1", "2"]);
+    winningCombinations.push(["3", "4", "5"]);
+    winningCombinations.push(["6", "7", "8"]);
+    winningCombinations.push(["0", "3", "6"]);
+    winningCombinations.push(["1", "4", "7"]);
+    winningCombinations.push(["2", "5", "8"]);
+    winningCombinations.push(["0", "4", "8"]);
+    winningCombinations.push(["2", "4", "6"]);
+
+    let currentPlayer = getCurrentPlayer();
+    playerChoices = currentPlayer.getChoices();
+    console.log("hi");
+    for (combo in winningCombinations) {
+      winningCombo = arrayInArrayChecker(
+        winningCombinations[combo],
+        playerChoices
+      );
+      if (winningCombo == true) {
+        console.log("WINNER!");
+        return 1;
+      }
+      return -1;
+    }
+  }
   return {
     currentPlayer: getCurrentPlayer,
     updateCurrentPlayer: updateCurrentPlayer,
+    checkForWinner: checkForWinner,
   };
 })();
 
 const gameBoardMaker = (function () {
   let gameBoardArray = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+  //let gameBoardArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
 
   function gameBoard(player, choice) {
     let mark = gameBoardArray[choice];
@@ -90,34 +120,32 @@ const displayController = (function () {
   }
   function formatCells() {
     const cells = document.querySelectorAll(".cell");
-    console.log(cells.length);
     cells.forEach((cell) => {
+      if (cell.textContent == "X" || cell.textContent == "O") {
+        return -1;
+      }
       cell.addEventListener("click", () => {
         let gameBoardIndex = cell.getAttribute("data-ID");
         let currentPlayer = playGame.currentPlayer();
-        playGame.updateCurrentPlayer();
-        console.log(currentPlayer.getName());
         currentPlayer.makeMark(gameBoardIndex);
+        playGame.updateCurrentPlayer();
       });
     });
   }
 
-  displayBoard();
-  return {
-    displayBoard: displayBoard,
-  };
-})();
-
-const formatElements = (function () {
   function formatStart() {
     const cell = document.querySelector(".start-btn");
     cell.addEventListener("click", () => {
       console.log("pp");
     });
   }
-})();
 
-//make factory function for players
+  displayBoard();
+  formatStart();
+  return {
+    displayBoard: displayBoard,
+  };
+})();
 
 //helper function
 function removeAllChildNodes(parent) {
@@ -132,4 +160,11 @@ function checkForBoard() {
     return false;
   }
   return true;
+}
+
+function arrayInArrayChecker(arr1, arr2) {
+  const containsAll = arr1.every((element) => {
+    return arr2.includes(element);
+  });
+  return containsAll;
 }
