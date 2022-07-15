@@ -9,114 +9,14 @@ const Player = (playerNum, name) => {
     playGame.checkForWinner();
   };
   getChoices = () => choices;
-  return { getChoices, getName, makeMark, getPlayerNum };
+  clearChoices = () => {
+    choices.splice(0, choices.length);
+  };
+  return { getChoices, getName, makeMark, getPlayerNum, clearChoices };
 };
 
-const playGame = (function () {
-  const names = [];
-  let startBtnPushed = false;
-  let winner = false;
-  let tie = false;
-  //the problem is that by the time setNames has been called, the stuff aroudn it has
-  //already been executes. It works but names and the making of the players has already been done.
-  function setNames() {
-    const playerOneInput = document.getElementById("playerOne").value;
-    if (playerOneInput !== "") {
-      names[0] = playerOneInput;
-    } else {
-      names[0] = "Player 1";
-    }
-    const playerTwoInput = document.getElementById("playerTwo").value;
-    if (playerOneInput !== "") {
-      names[1] = playerTwoInput;
-    } else {
-      names[1] = "Player 2";
-    }
-    startBtnPushed = true;
-  }
-  console.log(names);
-
-  const playerOne = Player("playerOne", names[0]);
-  const playerTwo = Player("playerTwo", names[1]);
-  const players = [playerOne];
-
-  function getCurrentPlayer() {
-    let currentPlayer = players[players.length - 1];
-    return currentPlayer;
-  }
-
-  function updateCurrentPlayer() {
-    let currentPlayer = getCurrentPlayer();
-    if (currentPlayer == playerOne) {
-      players.push(playerTwo);
-    }
-    if (currentPlayer == playerTwo) {
-      players.push(playerOne);
-    }
-  }
-
-  function checkForWinner() {
-    winningCombinations = [];
-    winningCombinations.push(["0", "1", "2"]);
-    winningCombinations.push(["3", "4", "5"]);
-    winningCombinations.push(["6", "7", "8"]);
-    winningCombinations.push(["0", "3", "6"]);
-    winningCombinations.push(["1", "4", "7"]);
-    winningCombinations.push(["2", "5", "8"]);
-    winningCombinations.push(["0", "4", "8"]);
-    winningCombinations.push(["2", "4", "6"]);
-
-    let currentPlayer = getCurrentPlayer();
-    playerChoices = currentPlayer.getChoices();
-    for (combo in winningCombinations) {
-      winningCombo = arrayInArrayChecker(
-        winningCombinations[combo],
-        playerChoices
-      );
-      if (winningCombo == true) {
-        displayController.displayWinner(currentPlayer);
-        winner = true;
-      } else {
-        checkForTie();
-      }
-    }
-  }
-
-  function checkForTie() {
-    let oneChoices = playerOne.getChoices();
-    let twoChoices = playerTwo.getChoices();
-
-    if (oneChoices.length + twoChoices.length === 9) {
-      displayController.displayTie();
-      tie = true;
-    }
-  }
-
-  function startButtonPushed() {
-    return startBtnPushed;
-  }
-
-  function winnerExists() {
-    return winner;
-  }
-
-  function tieExists() {
-    return tie;
-  }
-
-  return {
-    currentPlayer: getCurrentPlayer,
-    updateCurrentPlayer: updateCurrentPlayer,
-    checkForWinner: checkForWinner,
-    startButtonPushed,
-    setNames,
-    winnerExists,
-    tieExists,
-  };
-})();
-
 const gameBoardMaker = (function () {
-  let gameBoardArray = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
+  const gameBoardArray = [];
   //let gameBoardArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
 
   function gameBoard(player, choice) {
@@ -133,8 +33,12 @@ const gameBoardMaker = (function () {
     gameBoardArray[choice] = mark;
     return gameBoardArray;
   }
+  function clearBoard() {
+    gameBoardArray.splice(0, gameBoardArray.length);
+  }
   return {
     gameBoard: gameBoard,
+    clearBoard,
   };
 })();
 
@@ -192,12 +96,12 @@ const displayController = (function () {
     const startFormBtn = document.querySelector(".start-form-btn");
     startFormBtn.addEventListener("click", () => {
       playGame.setNames();
+      const container = document.querySelector("#container");
+      removeAllChildNodes(container);
       displayBoard();
       displayRoundUpdates();
     });
   }
-
-  //make it so that it doesnt continue unless the start button is hit
 
   function makeBoard(gameBoard) {
     let counter = 0;
@@ -232,6 +136,7 @@ const displayController = (function () {
     container.appendChild(displayTemp);
 
     formatCells();
+    makeRestartButton();
   }
   function formatCells() {
     const cells = document.querySelectorAll(".cell");
@@ -249,6 +154,24 @@ const displayController = (function () {
     });
   }
 
+  function makeRestartButton() {
+    const restartBtnSection = document.querySelector(".restart-btn-section");
+    if (checkForRestartBtn() === true) {
+      removeAllChildNodes(restartBtnSection);
+    }
+    const restartBtn = document.createElement("button");
+    restartBtn.classList.add("restart-btn");
+    restartBtn.textContent = "Restart";
+    restartBtnSection.appendChild(restartBtn);
+
+    restartButton();
+  }
+
+  function restartButton() {
+    const restartBtn = document.querySelector(".restart-btn");
+    restartBtn.addEventListener("click", playGame.restartGame);
+  }
+
   function displayRoundUpdates() {
     if (playGame.winnerExists() || playGame.tieExists()) {
       return -1;
@@ -262,6 +185,9 @@ const displayController = (function () {
   }
 
   function displayWinner(currentPlayer) {
+    if (playGame.winnerExists() || playGame.tieExists()) {
+      return -1;
+    }
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
     let winnerUpdate = document.createElement("span");
@@ -270,6 +196,9 @@ const displayController = (function () {
   }
 
   function displayTie() {
+    if (playGame.winnerExists() || playGame.tieExists()) {
+      return -1;
+    }
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
     let tieUpdate = document.createElement("span");
@@ -285,6 +214,119 @@ const displayController = (function () {
   };
 })();
 
+const playGame = (function () {
+  const names = [];
+  const players = [];
+  let winner = false;
+  let tie = false;
+
+  function setNames() {
+    const playerOneInput = document.getElementById("playerOne").value;
+    if (playerOneInput !== "") {
+      names[0] = playerOneInput;
+    } else {
+      names[0] = "Player 1";
+    }
+    const playerTwoInput = document.getElementById("playerTwo").value;
+    if (playerOneInput !== "") {
+      names[1] = playerTwoInput;
+    } else {
+      names[1] = "Player 2";
+    }
+    setPlayers();
+  }
+
+  function setPlayers() {
+    const playerOne = Player("playerOne", names[0]);
+    const playerTwo = Player("playerTwo", names[1]);
+    players.push(playerOne);
+    players.push(playerTwo);
+    players.push(playerOne);
+  }
+
+  function getCurrentPlayer() {
+    let currentPlayer = players[players.length - 1];
+    return currentPlayer;
+  }
+
+  function updateCurrentPlayer() {
+    let currentPlayer = getCurrentPlayer();
+    if (currentPlayer == players[0]) {
+      players.push(players[1]);
+    }
+    if (currentPlayer == players[1]) {
+      players.push(players[0]);
+    }
+  }
+
+  function checkForWinner() {
+    winningCombinations = [];
+    winningCombinations.push(["0", "1", "2"]);
+    winningCombinations.push(["3", "4", "5"]);
+    winningCombinations.push(["6", "7", "8"]);
+    winningCombinations.push(["0", "3", "6"]);
+    winningCombinations.push(["1", "4", "7"]);
+    winningCombinations.push(["2", "5", "8"]);
+    winningCombinations.push(["0", "4", "8"]);
+    winningCombinations.push(["2", "4", "6"]);
+
+    let currentPlayer = getCurrentPlayer();
+    playerChoices = currentPlayer.getChoices();
+    for (combo in winningCombinations) {
+      winningCombo = arrayInArrayChecker(
+        winningCombinations[combo],
+        playerChoices
+      );
+      if (winningCombo == true) {
+        displayController.displayWinner(currentPlayer);
+        winner = true;
+      } else {
+        checkForTie();
+      }
+    }
+  }
+
+  function checkForTie() {
+    let oneChoices = players[0].getChoices();
+    let twoChoices = players[1].getChoices();
+
+    if (oneChoices.length + twoChoices.length === 9) {
+      displayController.displayTie();
+      tie = true;
+    }
+  }
+
+  function winnerExists() {
+    return winner;
+  }
+
+  function tieExists() {
+    return tie;
+  }
+
+  function restartGame() {
+    players[0].clearChoices();
+    players[1].clearChoices();
+    gameBoardMaker.clearBoard();
+    winner = false;
+    tie = false;
+    let playerHolder = players[0];
+    players.push(playerHolder);
+    displayController.displayRoundUpdates();
+    displayController.displayBoard();
+  }
+
+  return {
+    currentPlayer: getCurrentPlayer,
+    updateCurrentPlayer: updateCurrentPlayer,
+    checkForWinner: checkForWinner,
+    setNames,
+    winnerExists,
+    tieExists,
+    restartGame,
+  };
+})();
+
 //helper function
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
@@ -295,6 +337,14 @@ function removeAllChildNodes(parent) {
 function checkForBoard() {
   const boardCheck = document.getElementById("board-container");
   if (!boardCheck) {
+    return false;
+  }
+  return true;
+}
+
+function checkForRestartBtn() {
+  const restartBtnCheck = document.querySelector(".restart-btn-section");
+  if (!restartBtnCheck) {
     return false;
   }
   return true;
