@@ -25,6 +25,7 @@ const playGame = (function () {
   const playerTwo = Player(names[1]);
   const players = [playerOne];
   let winner = false;
+  let tie = false;
 
   function getCurrentPlayer() {
     let currentPlayer = players[players.length - 1];
@@ -62,7 +63,19 @@ const playGame = (function () {
       if (winningCombo == true) {
         displayController.displayWinner(currentPlayer);
         winner = true;
+      } else {
+        checkForTie();
       }
+    }
+  }
+
+  function checkForTie() {
+    let oneChoices = playerOne.getChoices();
+    let twoChoices = playerTwo.getChoices();
+
+    if (oneChoices.length + twoChoices.length === 9) {
+      displayController.displayTie();
+      tie = true;
     }
   }
 
@@ -70,11 +83,16 @@ const playGame = (function () {
     return winner;
   }
 
+  function tieExists() {
+    return tie;
+  }
+
   return {
     currentPlayer: getCurrentPlayer,
     updateCurrentPlayer: updateCurrentPlayer,
     checkForWinner: checkForWinner,
     winnerExists,
+    tieExists,
   };
 })();
 
@@ -177,7 +195,7 @@ const displayController = (function () {
     return boardContainer;
   }
   function displayBoard() {
-    if (playGame.winnerExists()) {
+    if (playGame.winnerExists() || playGame.tieExists()) {
       return -1;
     }
     const container = document.querySelector("#container");
@@ -214,7 +232,7 @@ const displayController = (function () {
   // }
 
   function displayRoundUpdates() {
-    if (playGame.winnerExists()) {
+    if (playGame.winnerExists() || playGame.tieExists()) {
       return -1;
     }
     let currentPlayer = playGame.currentPlayer();
@@ -233,6 +251,14 @@ const displayController = (function () {
     gameUpdates.appendChild(winnerUpdate);
   }
 
+  function displayTie() {
+    const gameUpdates = document.querySelector(".game-updates");
+    removeAllChildNodes(gameUpdates);
+    let tieUpdate = document.createElement("span");
+    tieUpdate.textContent = "It's a tie!";
+    gameUpdates.appendChild(tieUpdate);
+  }
+
   displayBoard();
   displayRoundUpdates();
   // formatStart();
@@ -240,6 +266,7 @@ const displayController = (function () {
     displayBoard,
     displayWinner,
     displayRoundUpdates,
+    displayTie,
   };
 })();
 
