@@ -56,7 +56,9 @@ const displayController = (function () {
     namesForm.setAttribute("method", "post");
     namesForm.setAttribute("id", "names_form");
 
-    const playerOneField = document.createElement("div");
+    const playersField = document.createElement("div");
+
+    const playerOneField = document.createElement("span");
     playerOneField.classList.add("form-field");
     const playerOneInput = document.createElement("input");
     playerOneInput.setAttribute("type", "text");
@@ -64,9 +66,9 @@ const displayController = (function () {
     playerOneInput.setAttribute("id", "playerOne");
     playerOneInput.setAttribute("placeholder", "Player 1");
     playerOneField.appendChild(playerOneInput);
-    namesForm.appendChild(playerOneField);
+    playersField.appendChild(playerOneField);
 
-    const playerTwoField = document.createElement("div");
+    const playerTwoField = document.createElement("span");
     playerTwoField.classList.add("form-field");
     const playerTwoInput = document.createElement("input");
     playerTwoInput.setAttribute("type", "text");
@@ -74,13 +76,19 @@ const displayController = (function () {
     playerTwoInput.setAttribute("id", "playerTwo");
     playerTwoInput.setAttribute("placeholder", "Player 2");
     playerTwoField.appendChild(playerTwoInput);
-    namesForm.appendChild(playerTwoField);
+    playersField.appendChild(playerTwoField);
+
+    namesForm.appendChild(playersField);
+
+    const startBtnContainer = document.createElement("div");
+    startBtnContainer.classList.add("start-btn-container");
 
     const startBtn = document.createElement("button");
     startBtn.classList.add("start-form-btn");
     startBtn.setAttribute("type", "button");
     startBtn.textContent = "Start";
-    namesForm.appendChild(startBtn);
+    startBtnContainer.appendChild(startBtn);
+    namesForm.appendChild(startBtnContainer);
 
     const container = document.querySelector("#container");
 
