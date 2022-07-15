@@ -1,0 +1,65 @@
+@font-face {
+  font-family: vanilla-font;
+  src: url(./Vanilla-Dreamers-Font.otf);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background-color: orange;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 30%;
+}
+
+.title {
+  font-family: vanilla-font;
+  font-size: 5rem;
+  color: rgb(148, 55, 71);
+}
+
+.game-updates {
+  font-size: 1.5rem;
+}
+
+.player-name {
+  color: rgb(148, 55, 71);
+  font-weight: 900;
+}
+
+.winner-update {
+  color: rgb(148, 55, 71);
+  font-weight: 900;
+}
+
+#container {
+  height: 70%;
+  display: grid;
+  justify-content: center;
+  font-family: "Roboto", sans-serif;
+}
+
+.row {
+  display: flex;
+  width: 60vw;
+  height: 20vh;
+}
+
+.cell {
+  flex: 1;
+  background-color: lightblue;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
