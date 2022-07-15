@@ -1,28 +1,33 @@
-const Player = (name) => {
+const Player = (playerNum, name) => {
   const choices = [];
   const getName = () => name;
+  const getPlayerNum = () => playerNum;
   const makeMark = (choice) => {
     choices.push(choice);
-    gameBoardMaker.gameBoard(name, choice);
+    gameBoardMaker.gameBoard(playerNum, choice);
     displayController.displayBoard();
     playGame.checkForWinner();
   };
   getChoices = () => choices;
-  return { getChoices, getName, makeMark };
+  return { getChoices, getName, makeMark, getPlayerNum };
 };
 
 const playGame = (function () {
-  names = ["playerOne", "playerTwo"];
+  names = ["Player 2", "Player 1"];
 
   function setNames() {
     const playerOneInput = document.getElementById("playerOne").value;
-    names[0] = playerOneInput;
+    if (playerOneInput !== "") {
+      names[0] = playerOneInput;
+    }
     const playerTwoInput = document.getElementById("playerTwo").value;
-    names[1] = playerTwoInput;
+    if (playerOneInput !== "") {
+      names[1] = playerTwoInput;
+    }
   }
 
-  const playerOne = Player(names[0]);
-  const playerTwo = Player(names[1]);
+  const playerOne = Player("playerOne", names[0]);
+  const playerTwo = Player("playerTwo", names[1]);
   const players = [playerOne];
   let winner = false;
   let tie = false;
@@ -174,6 +179,8 @@ const displayController = (function () {
     startFormBtn.addEventListener("click", playGame.setNames);
   }
 
+  //make it so that it doesnt continue unless the start button is hit
+
   function makeBoard(gameBoard) {
     let counter = 0;
     const row = [];
@@ -224,13 +231,6 @@ const displayController = (function () {
     });
   }
 
-  // function formatStart() {
-  //   const cell = document.querySelector(".start-btn");
-  //   cell.addEventListener("click", () => {
-  //     console.log("pp");
-  //   });
-  // }
-
   function displayRoundUpdates() {
     if (playGame.winnerExists() || playGame.tieExists()) {
       return -1;
@@ -239,7 +239,7 @@ const displayController = (function () {
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
     let roundUpdates = document.createElement("span");
-    roundUpdates.textContent = currentPlayer.getName() + " ,It's your move.";
+    roundUpdates.textContent = currentPlayer.getName() + ", It's your move.";
     gameUpdates.appendChild(roundUpdates);
   }
 
