@@ -3,14 +3,24 @@
   padding: 0;
 }
 
-#container {
+body {
   height: 100vh;
   overflow: hidden;
-  display: grid;
+  background-color: orange;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 30%;
+}
+
+#container {
+  height: 70%;
   display: grid;
   justify-content: center;
-  align-items: center;
-  background-color: orange;
   font-family: "Roboto", sans-serif;
 }
 
