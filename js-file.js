@@ -179,8 +179,12 @@ const displayController = (function () {
     let currentPlayer = playGame.currentPlayer();
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
+    let playerName = document.createElement("span");
+    playerName.classList.add("player-name");
     let roundUpdates = document.createElement("span");
-    roundUpdates.textContent = currentPlayer.getName() + ", It's your move.";
+    playerName.textContent = currentPlayer.getName();
+    roundUpdates.textContent = ", It's your move.";
+    gameUpdates.appendChild(playerName);
     gameUpdates.appendChild(roundUpdates);
   }
 
@@ -191,6 +195,7 @@ const displayController = (function () {
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
     let winnerUpdate = document.createElement("span");
+    winnerUpdate.classList.add("winner-update");
     winnerUpdate.textContent = currentPlayer.getName() + " wins!";
     gameUpdates.appendChild(winnerUpdate);
   }
