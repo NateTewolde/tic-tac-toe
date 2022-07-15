@@ -79,7 +79,7 @@ const displayController = (function () {
     const startBtn = document.createElement("button");
     startBtn.classList.add("start-form-btn");
     startBtn.setAttribute("type", "button");
-    startBtn.textContent = "start";
+    startBtn.textContent = "Start";
     namesForm.appendChild(startBtn);
 
     const container = document.querySelector("#container");
