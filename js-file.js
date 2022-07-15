@@ -13,20 +13,28 @@ const Player = (playerNum, name) => {
 };
 
 const playGame = (function () {
-  const names = ["Player 1", "Player 2"];
+  const names = [];
+  let startBtnPushed = false;
   let winner = false;
   let tie = false;
-
+  //the problem is that by the time setNames has been called, the stuff aroudn it has
+  //already been executes. It works but names and the making of the players has already been done.
   function setNames() {
     const playerOneInput = document.getElementById("playerOne").value;
     if (playerOneInput !== "") {
       names[0] = playerOneInput;
+    } else {
+      names[0] = "Player 1";
     }
     const playerTwoInput = document.getElementById("playerTwo").value;
     if (playerOneInput !== "") {
       names[1] = playerTwoInput;
+    } else {
+      names[1] = "Player 2";
     }
+    startBtnPushed = true;
   }
+  console.log(names);
 
   const playerOne = Player("playerOne", names[0]);
   const playerTwo = Player("playerTwo", names[1]);
@@ -84,6 +92,10 @@ const playGame = (function () {
     }
   }
 
+  function startButtonPushed() {
+    return startBtnPushed;
+  }
+
   function winnerExists() {
     return winner;
   }
@@ -96,6 +108,8 @@ const playGame = (function () {
     currentPlayer: getCurrentPlayer,
     updateCurrentPlayer: updateCurrentPlayer,
     checkForWinner: checkForWinner,
+    startButtonPushed,
+    setNames,
     winnerExists,
     tieExists,
   };
@@ -176,7 +190,11 @@ const displayController = (function () {
 
   function startFormButton() {
     const startFormBtn = document.querySelector(".start-form-btn");
-    startFormBtn.addEventListener("click", playGame.setNames);
+    startFormBtn.addEventListener("click", () => {
+      playGame.setNames();
+      displayBoard();
+      displayRoundUpdates();
+    });
   }
 
   //make it so that it doesnt continue unless the start button is hit
@@ -259,9 +277,6 @@ const displayController = (function () {
     gameUpdates.appendChild(tieUpdate);
   }
 
-  displayBoard();
-  displayRoundUpdates();
-  // formatStart();
   return {
     displayBoard,
     displayWinner,
