@@ -13,7 +13,9 @@ const Player = (playerNum, name) => {
 };
 
 const playGame = (function () {
-  names = ["Player 2", "Player 1"];
+  const names = ["Player 1", "Player 2"];
+  let winner = false;
+  let tie = false;
 
   function setNames() {
     const playerOneInput = document.getElementById("playerOne").value;
@@ -29,8 +31,6 @@ const playGame = (function () {
   const playerOne = Player("playerOne", names[0]);
   const playerTwo = Player("playerTwo", names[1]);
   const players = [playerOne];
-  let winner = false;
-  let tie = false;
 
   function getCurrentPlayer() {
     let currentPlayer = players[players.length - 1];
