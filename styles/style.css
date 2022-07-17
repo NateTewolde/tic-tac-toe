@@ -42,6 +42,11 @@ body {
   font-weight: 900;
 }
 
+.tie-update {
+  color: rgb(148, 55, 71);
+  font-weight: 900;
+}
+
 #container {
   height: 70%;
   display: grid;
