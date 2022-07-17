@@ -215,6 +215,7 @@ const displayController = (function () {
     const gameUpdates = document.querySelector(".game-updates");
     removeAllChildNodes(gameUpdates);
     let tieUpdate = document.createElement("span");
+    tieUpdate.classList.add("tie-update");
     tieUpdate.textContent = "It's a tie!";
     gameUpdates.appendChild(tieUpdate);
   }
